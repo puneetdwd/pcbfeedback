@@ -1,0 +1,105 @@
+/* here you can put your own css to customize and override the theme */
+.page-content {
+    padding-top:60px;
+}
+.page-header .navbar .navbar-nav .dropdown-menu > li > a {
+    padding-top:15px;
+    padding-bottom:15px;
+}
+.page-header .navbar-collapse .navbar-nav .more-dropdown-sub > a::after {
+    top:10px;
+}
+.table.table-light > tbody > tr > td, .table.table-bordered > tbody > tr > td{
+    color: #000;
+}
+.table.table-light > thead > tr > th, .table.table-bordered > thead > tr > th {
+    color: #555;
+}
+.table-bordered, .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border-color: #f2f5f8;
+}
+#make-data-table_length .select2-container--bootstrap {
+    display:inline-block;
+}
+span.required {
+    color:#e73d4a;
+}
+.breadcrumbs > H1 > small {
+    text-transform: none;
+}
+a {
+    color:#c80541;
+}
+a:active, a:focus, a:hover {
+    color:#D91E18;
+}
+.profile-stat-title {
+    color: #e43a45;
+    font-size: 25px;
+    text-align: center; 
+}
+
+.profile-stat-text {
+  color: #7f90a4;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center; 
+}
+
+.page-header .navbar .topbar-actions .btn-group-img .btn > span {
+    color: #FFFFFF;
+}
+.page-logo:hover {
+text-decoration:none !important;
+}
+.page-logo-text {
+    color: #FFFFFF;
+    font-family: Oswald,sans-serif;
+    line-height: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+.realtime-dash-header .realtime-dash-heading {
+    color: #8e9daa;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+.realtime-dash-row .realtime-dash-row-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+.realtime-dash-row .realtime-dash-row-numbers {
+    font-weight:700;
+}
+
+.realtime-dash-row .progress-info .progress {
+    display: block;
+    height: 4px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+.realtime-dash-row .progress-info .status {
+    color: #aab5bc;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+.tt-hint {
+    color:#AAAAAA !important;
+}
+.tt-input {
+    color:#555555 !important;
+}
+span#-error {
+    display:none !important;
+}
+.merged-cell {
+    vertical-align:middle !important;
+}
