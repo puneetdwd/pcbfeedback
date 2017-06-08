@@ -59,6 +59,9 @@ class Users extends Admin_Controller {
             //$validate->set_rules('mobile', 'Product', 'required|xss_clean');
 
             if($validate->run() === TRUE) {
+				echo "<pre>";
+				print_r($this->input->post());
+				//die;
                 $post_data                  = $this->input->post();
                 $post_data['product_id']    = implode(',', $post_data['product_id']);
                 
@@ -70,6 +73,7 @@ class Users extends Admin_Controller {
 
                 $exists = $this->User_model->is_username_exists($post_data['username'], $id);
                 if(!$exists){
+					
 
                     $user_id = $this->User_model->update_user($post_data, $id);
                     if($user_id) {
@@ -81,6 +85,7 @@ class Users extends Admin_Controller {
                     }
 
                 } else {
+					
                     $data['error'] = 'Username already exists.';
                 }
 

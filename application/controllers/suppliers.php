@@ -1,8 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Suppliers extends Admin_Controller {
+	
 
     public function __construct() {
-
         parent::__construct();
 
 
@@ -74,8 +74,10 @@ class Suppliers extends Admin_Controller {
         if($this->input->post()) {
 
             $post_data = $this->input->post();
+			
 
-			//print_r($post_data);die();
+			
+			//echo "<pre>";print_r($post_data);die();
 
             $post_data['password'] = 'lge@123';
 

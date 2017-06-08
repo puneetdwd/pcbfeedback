@@ -8,9 +8,9 @@ class Supplier_model extends CI_Model {
     }
     
     function add_supplier($data, $supplier_id){
-        $needed_array = array('name', 'supplier_no', 'email', 'password', 'is_active');
+        $needed_array = array('name', 'supplier_no', 'email', 'password', 'is_active','type-supplier','suffixVal');
+		
         $data = array_intersect_key($data, array_flip($needed_array));
-
         if(!empty($data['name'])) {
             $data['name'] = ucwords(strtolower($data['name']));
         }

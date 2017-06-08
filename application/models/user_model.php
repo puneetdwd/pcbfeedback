@@ -15,10 +15,10 @@ class User_model extends CI_Model {
         LEFT JOIN products p
         ON FIND_IN_SET(p.id, u.product_id)";
         
-        if($this->product_id) {
+       /* if($this->product_id) {
             $sql .= " WHERE FIND_IN_SET(".$this->product_id.", u.product_id) ";
-        }
-        
+        }*/
+        //echo  $sql;die;
         $sql .= " GROUP BY u.id";
         //echo $this->product_id." ".$sql; exit;
         $users = $this->db->query($sql);
@@ -104,6 +104,7 @@ class User_model extends CI_Model {
         
         
         $data = array_intersect_key($data, array_flip($needed_array));
+		//print_r($data);die;
 
         if(!empty($data['password'])) {
             $cost = $this->config->item('hash_cost');
