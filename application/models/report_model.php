@@ -36,12 +36,14 @@ class Report_model extends CI_Model {
 		return $query->row_array();	
 	}
 	function calculate_category_count_week($vendor,$category,$date,$start,$end){
-		
+	//	print_r($date);
 		$total = 0;
 		foreach($date as $d){
-
-                       $date1 = date('Y-m-d',strtotime($d));
-
+			$da = str_replace('/','-',trim($d));
+			$data123=   $da .' 01:23:42';
+			//echo $data123.'<br>';
+            $date1 = date('Y-m-d',strtotime($data123));
+			//echo $date1 .'<br>';
 			$this->db->select('COUNT(*) AS total', FALSE);
 			$this->db->where("defect_date LIKE '$date1%'");
 			$this->db->where('vendor',$vendor);
@@ -49,7 +51,7 @@ class Report_model extends CI_Model {
 			$this->db->order_by('vendor', "asc"); 
 			$query = $this->db->get('Damaged_pcb_detail');
 			$counts = $query->row_array();
-                     //    echo $this->db->last_query();die;
+             //echo $this->db->last_query();die;
 			$total = $total + $counts['total'];
 		}
 		return $total;

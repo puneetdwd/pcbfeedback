@@ -578,9 +578,10 @@ if(!empty($v['vendor']))
 				if(!empty($categories)){
 					foreach($categories as $c){
 						if(!empty($c['category'])){
-                                                               if(!empty($v['vendor'])){
+                           if(!empty($v['vendor'])){
 							$category_count = $this->report_model->calculate_category_count_week($v['vendor'],$c['category'],
 							$ndate,$date_from,$date_to);
+							//echo $category_count;die;
 							$count = @(($category_count * 1000000)/$production_week[$v['vendor']]);
 							if(false === $count) {
 							  $count = 0;
@@ -609,6 +610,8 @@ if(!empty($v['vendor']))
 			$defectQtyWeek['DEF QTY.'][] = array_sum($defectQtyWeek['DEF QTY.']);
 		}
 		
+		//echo "<pre>";
+		//print_r($new_json_array_week);die;
 		
 		foreach($new_json_array_week as $array){
 			foreach($array as $arr){
@@ -625,12 +628,6 @@ if(!empty($v['vendor']))
 			$week_json_array[] = $new_total_category_count;
 			$new_total_category_count = array();	
 		}
-echo "<pre>";
-print_r($new_total_category_count);
-print_r($year_json_array);
-print_r($month_json_array);
-
-print_r($week_json_array);die;
 		
 		$data['totals'] = $totals;
 		$data['totals_month'] = $totals_month;

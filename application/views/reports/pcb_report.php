@@ -1,3 +1,9 @@
+
+ <?php 
+	//echo "<pre>";
+	//print_r($json_year);
+	//echo "<br>";
+	//print_r($json_week);die;?>
 <link href="http://www.webdetails.pt/ctools/charts/lib/tipsy.css" rel="stylesheet" type="text/css" />
 <style>
 .yearText {
@@ -313,6 +319,7 @@
               </div>
         </div>
     </div>
+   
     <input type="hidden" id="hidden_data_yr" name="hidden_type_yr"/>
     <input type="hidden" id="hidden_data_month" name="hidden_type_month"/>
     <input type="hidden" id="hidden_data_wk" name="hidden_type_wk"/>
