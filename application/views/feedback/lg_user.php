@@ -93,11 +93,11 @@ $(function() {
 			{ name: "Repair Contents", type: "text", width: 230,editing: false },
 			{ name: "Vendor", type: "text", width: 150,editing: false },
 			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150, items: db.defect, valueField: "Id", textField: "Name",editing: false},
-			{ name: "Category", type: "text", width: 150, items: db.category, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Cause Dept", type: "text", width: 150, items: db.cause_dept, valueField: "Id", textField: "Name",editing: false },
+			{ name: "Defect", type: "text", width: 150,editing: false},
+			{ name: "Category", type: "text", width: 150, editing: false },
+			{ name: "Cause Dept", type: "text", width: 150, editing: false },
 			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150, items: db.status, valueField: "Id", textField: "Name",editing: false },
+			{ name: "Status", type: "text", width: 150,editing: false },
 			{ name: "Cause", type: "text", width: 150 },
 			{ name: "Operator Name", type: "text", width: 150 },
 			{ name: "Action", type: "text", width: 150 },
@@ -116,7 +116,8 @@ $(function() {
 });
 </script>
 <script>
-var base_url='http://crgroup.co.in/lg/sqim/';
+//var base_url='http://crgroup.co.in/lg/sqim/';
+var base_url = '<?php  echo base_url();?>';
 $(function() {
     var db = {
 
@@ -131,7 +132,7 @@ $(function() {
 						cache:false,
 						async:false,
 						success: function(response){ 
-							//console.log(response);
+							console.log(response);
 							$.each(response,function(key,data){
 								var photo="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.set_sn+"'>View</a>";
 								/*if(data.photo=='' || data.photo==undefined ){
@@ -141,6 +142,7 @@ $(function() {
 									var photo="<img width='64' height='64' src='"+base_url+"upload/images/LGREPAIR/"+data.set_sn+"/photo/"+data.photo+"'>"
 								}*/
 								var obj={};
+								obj['ID']=data.id;
 								obj['Organization Name']=data.organization;
 								obj['Production Line']=data.production_line;
 								obj['Set S/N']=data.set_sn;
@@ -264,7 +266,8 @@ jsGrid.fields.date = DateField;
 }());
 </script>
 <script>
-var base_url='http://crgroup.co.in/lg/sqim/';
+//var base_url='http://crgroup.co.in/lg/sqim/';
+var base_url = '<?php  echo base_url();?>';
 $(function() {
     var db1 = {
 
@@ -290,6 +293,7 @@ $(function() {
 									var photo="<img width='64' height='64' src='"+base_url+"upload/images/LGREPAIR/"+data.set_sn+"/photo/"+data.photo+"'>"
 								}*/
 								var obj={};
+							
 								obj['Organization Name']=data.organization;
 								obj['Production Line']=data.production_line;
 								obj['Set S/N']=data.set_sn;
@@ -398,7 +402,8 @@ jsGrid.fields.date = DateField;
 </script>
 <script>
 	$(document).ready(function(){
-		var base_url='http://crgroup.co.in/lg/sqim/';
+		//var base_url='http://crgroup.co.in/lg/sqim/';
+		var base_url = '<?php  echo base_url();?>';
 		$(document).on("click", ".uploadImg", function () {
 		 var Id = $(this).data('id');
 		 $(".modal-body #partNo").val( Id );

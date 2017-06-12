@@ -22,7 +22,11 @@ class Feedback extends Admin_Controller {
 		}
 		$data='';
 		$data['sessiondata']=$this->session->userdata;
-		// print_r($this->session->userdata);die();
+		$this->load->model('Masters_model');
+		$data['masters_defect'] = $this->Masters_model->get_all_type(defect);
+		$data['master_category'] = $this->Masters_model->get_all_type(category);
+		$data['master_cause_dept'] = $this->Masters_model->get_all_type(cause_dept);
+		//print_r($data['masters_defect']);die;
 		$this->template->write('title', 'SQIM | User Feedback');
 		$this->template->write_view('content', 'feedback/lg_user', $data);
         $this->template->render();
@@ -42,11 +46,17 @@ class Feedback extends Admin_Controller {
 		if($this->session->userdata('user_type')!='LG Repair'){
 			redirect(base_url());	
 		}
+		//echo "<pre>";
+		//print_r($this->session);die;
 		$data='';
 		$data['sessiondata']=$this->session->userdata;
-		//print_r($this->session->userdata);die(); 
+		//print_r($this->session->userdata());die(); 
+		$this->load->model('Masters_model');
+		$data['masters_defect'] = $this->Masters_model->get_all_type(defect);
+		$data['master_category'] = $this->Masters_model->get_all_type(category);
+		$data['master_cause_dept'] = $this->Masters_model->get_all_type(cause_dept);
 		$this->template->write('title', 'SQIM | Repair Feedback');
-		$this->template->write_view('content', 'feedback/lg_repair_user', $data);
+		$this->template->write_view('content', 'feedback/lg_repair_user',$data);
         $this->template->render();
 	}
 

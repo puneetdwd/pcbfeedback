@@ -96,7 +96,21 @@ class Masters extends Admin_Controller {
 	
 	public function get_all_data($type){
 		$get_id = $this->Masters_model->get_all_data($type);
+		
 		echo json_encode($get_id);
+	}
+	
+	public function get_all_repair_data(){
+		$get_id = $this->Masters_model->get_all_repair_data();
+		
+		echo json_encode($get_id);
+	}
+	
+	public function lg_repair_save_data(){
+			$postData=$this->input->post();
+		$this->load->model('Supplier_model');
+
+		$responseData=$this->Masters_model->insertLGRepairData($postData);
 	}
 	
 }

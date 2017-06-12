@@ -328,4 +328,71 @@ function get_all_user_data_total(){
 		return $all_data;
 //        return $this->db->query($sql)->result_array();
 	}
+	
+	function get_all_lg_user_data(){
+		//$uid=$this->session->userdata('id');
+		//$uType=$this->session->userdata('user_type');
+		//$uType='LG USER';
+		
+		/*$sql = "SELECT *
+        FROM `Damaged_pcb_detail` 
+        WHERE user_id = '".$uid."' AND user_type = '".$uType."'";
+		$sql = "SELECT *
+        FROM `Damaged_pcb_detail` where repair_user_cause_dept != Vendor";*/
+		
+		$sql = "SELECT * FROM  `Damaged_pcb_detail` WHERE  `repair_user_cause_dept` !=  'Vendor' AND `repair_user_cause_dept` !=  ' '";
+      // echo $sql;die();
+        return $this->db->query($sql)->result_array();
+	}
+	
+		function insertLGUserData($postData) {
+		$dataToInsert=$postData['updatingClient'];
+		$dataArray=json_decode($dataToInsert, true);
+		//print_r($dataArray['Organization Name']);
+		//print_r($dataArray);die();
+		$insertData=array(
+			//"organization"=>array_key_exists('Organization Name', $dataArray)?$dataArray['Organization Name']:'',
+			//"production_line"=>array_key_exists('Production Line', $dataArray)?$dataArray['Production Line']:'',
+			//"set_sn"=>array_key_exists('Set S/N', $dataArray)?$dataArray['Set S/N']:'',
+			//"defect_date"=>array_key_exists('Defect Date', $dataArray)?$dataArray['Defect Date']:'',
+			//"part_no"=>array_key_exists('Part No', $dataArray)?$dataArray['Part No']:'',
+		//	"defect_qty"=>array_key_exists('Defect Quantity', $dataArray)?$dataArray['Defect Quantity']:'',
+		//	"pcbg_main"=>array_key_exists('PCBG Main', $dataArray)?$dataArray['PCBG Main']:'',
+			//"symptom_level_3"=>array_key_exists('Symptom Level 3', $dataArray)?$dataArray['Symptom Level 3']:'',
+			//"cause_level_1"=>array_key_exists('Cause Level 1', $dataArray)?$dataArray['Cause Level 1']:'',
+		//	"cause_level_2"=>array_key_exists('Cause Level 2', $dataArray)?$dataArray['Cause Level 2']:'',
+		//	"cause_level_3"=>array_key_exists('Cause Level 3', $dataArray)?$dataArray['Cause Level 3']:'',
+			//"repair_contents"=>array_key_exists('Repair Contents', $dataArray)?$dataArray['Repair Contents']:'',
+			//"user_cause"=>array_key_exists('Cause', $dataArray)?$dataArray['Cause']:'',
+			//"defect"=>array_key_exists('Defect', $dataArray)?$dataArray['Defect']:'',
+			//"category"=>array_key_exists('Category', $dataArray)?$dataArray['Category']:'',
+			//"repair_user_cause_dept"=>array_key_exists('Cause Dept', $dataArray)?$dataArray['Cause Dept']:'',
+			//"status"=>array_key_exists('Status', $dataArray)?$dataArray['Status']:'',
+			//"defect"=>array_key_exists('Defect', $dataArray)?$dataArray['Defect']:'',
+			"user_cause"=>array_key_exists('Cause', $dataArray)?$dataArray['Cause']:'',
+			"operator_name"=>array_key_exists('Operator Name', $dataArray)?$dataArray['Operator Name']:'',
+			"action"=>array_key_exists('Action', $dataArray)?$dataArray['Action']:'',
+			
+			//"user_id"=>$this->session->userdata('id'),
+			//"user_type"=>$this->session->userdata('user_type'));
+			//"user_type"=>"LG USER"
+			);
+		
+		//print_r($insertData);die();
+		//$this->db->where('user_id',$this->session->userdata('id'));
+		//$this->db->where('user_type',"LG USER");
+		$this->db->where('id',$dataArray['ID']);
+		$this->db->update('Damaged_pcb_detail',$insertData);
+		echo $this->db->last_query();die;
+		//return (($this->db->insert('Damaged_pcb_detail', $insertData)) ? $this->db->insert_id() : False);
+		//echo $this->db->last_query();die();
+        /*$sql = "SELECT DISTINCT p.id, p.name, p.org_id 
+        FROM `sp_mappings` sp 
+        INNER JOIN products p 
+        ON sp.product_id = p.id 
+        WHERE sp.supplier_id = ?";
+        
+        return $this->db->query($sql, array($supplier_id))->result_array();*/
+    }
+	
 }
