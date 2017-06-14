@@ -140,17 +140,17 @@ $(function() {
 			{ name: "Repair Contents", type: "text", width: 230,editing: false },
 			{ name: "Vendor", type: "text", width: 150,editing: false },
 			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150, items: getDefect[0], valueField: "defect_id", textField: "defect_name",editing: false},
-			{ name: "Category", type: "text", width: 150, items: getCategory[0], valueField: "category_id", textField: "category_name",editing: false },
-			{ name: "Cause Dept", type: "text", width: 150, items: getCauseDept[0], valueField: "cause_dept_id", textField: "cause_dept_name" ,editing: false },
+			{ name: "Defect", type: "text", width: 150,editing: false},
+			{ name: "Category", type: "text", width: 150,editing: false },
+			{ name: "Cause Dept", type: "text", width: 150,editing: false },
 			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150,  items: getStatus[0], valueField: "status_id", textField: "status_name" ,editing: false },
-			{ name: "Cause", type: "text", width: 150 },
-			{ name: "AOI Detection Status", type: "select", width: 150, items: getAOIDetectStatus[0], valueField: "aoi_detection_status_id", textField: "aoi_detection_status_name"},
-			{ name: "AOI Detection Possibility", type: "select", width: 150, items: getAOIDetectPossibility[0], valueField: "aoi_detection_possibility_id", textField: "aoi_detection_possibility_name"},
+			{ name: "Status", type: "text", width: 150,editing: false },
+			{ name: "Cause", type: "text", width: 150},
+			{ name: "AOI Detection Status", type: "text"},
+			{ name: "AOI Detection Possibility", type: "text", width: 150},
 			{ name: "AOI Revision", type: "text", width: 150},
-			{ name: "DFT Detection Status", type: "select", width: 150, items: getDFTDetectStatus[0], valueField: "dft_detection_status_id", textField: "dft_detection_status_name" },
-			{ name: "DFT Detection Possibility", type: "select", width: 150, items: getDFTDetectPossibility[0], valueField: "dft_detection_possibility_id", textField: "dft_detection_possibility_name" },
+			{ name: "DFT Detection Status", type: "text", width: 150 },
+			{ name: "DFT Detection Possibility", type: "text"},
 			{ name: "DFT Revision", type: "text", width: 150},
 			{ name: "CM Report", type: "text", width: 150,editing: false},
             { type: "control", deleteButton: false,width:100 },
@@ -185,8 +185,7 @@ var base_url='<?php echo base_url(); ?>';
 	});
 	
 	
-	return res;
-}
+	return res;}
 	getStatus=getSelectData('status');
 	getCauseDept=getSelectData('cause_dept');
 	getCategory=getSelectData('category');
@@ -209,7 +208,7 @@ var base_url='<?php echo base_url(); ?>';
 						cache:false,
 						async:false,
 						success: function(response){ 
-							//console.log(response);
+							console.log(response);
 							$.each(response,function(key,data){
 								if(data.photo !='')
 								{
@@ -228,6 +227,7 @@ var base_url='<?php echo base_url(); ?>';
 								//	var cm_report="<img width='64' height='64' src='"+base_url+"upload/images/LG/<?php echo $sessiondata['user_type']; ?>/<?php echo $sessiondata['id']; ?>/"+data.set_sn+"/report/"+data.cm_report+"'>"
 								//}
 								var obj={};
+								obj['ID']=data.id;
 								obj['Organization Name']=data.organization;
 								obj['Production Line']=data.production_line;
 								obj['Set S/N']=data.set_sn;
@@ -281,7 +281,7 @@ var base_url='<?php echo base_url(); ?>';
         },
 
         updateItem: function(updatingClient) {
-			//console.log(updatingClient.Cause);
+			console.log(updatingClient.Cause);
 			var updatingClientString=JSON.stringify(updatingClient ); 
 			$.ajax({
 					   url: base_url+"suppliers/supplier_save_data", 
