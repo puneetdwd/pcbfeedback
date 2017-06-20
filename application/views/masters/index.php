@@ -45,7 +45,10 @@ $m_type=implode(' ',$typeArr);
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <?php if(empty($masters)) { ?>
+                    <?php 
+					
+					//print_r($masters);die;
+					if(empty($masters)) { ?>
                         <p class="text-center">No <?php echo $m_type; ?> exist yet.</p>
                     <?php } else { ?>
                         <table class="table table-hover table-light" id="make-data-table">
@@ -59,15 +62,15 @@ $m_type=implode(' ',$typeArr);
                             <tbody>
                                 <?php foreach($masters as $master) { ?>
                                     <tr>
-                                        <td><?php echo $master[$type."_id"]; ?></td>
-                                        <td><?php echo $master[$type."_name"]; ?></td>
+                                        <td><?php echo $master["id"]; ?></td>
+                                        <td><?php echo $master["name"]; ?></td>
                                         <td nowrap>
                                             <a class="button small gray" 
-                                                href="<?php echo base_url()."masters/add/".$type."/".$master[$type."_id"];?>">
+                                                href="<?php echo base_url()."masters/add/".$type."/".$master["id"];?>">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
                                             <a class="button small gray" 
-                                                href="<?php echo base_url()."masters/delete/".$type."/".$master[$type."_id"];?>">
+                                                href="<?php echo base_url()."masters/delete/".$type."/".$master["id"];?>">
                                                 <i class="fa fa-remove"></i> Delete
                                             </a>
                                         </td>
