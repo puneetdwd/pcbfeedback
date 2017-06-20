@@ -41,8 +41,8 @@
                                 </div>
                             <?php } ?>
 
-                            <?php if(isset($type_response[$type.'_id'])) { ?>
-                                <input type="hidden" name="id" value="<?php echo $type_response[$type.'_id']; ?>" />
+                            <?php if(isset($type_response['id'])) { ?>
+                                <input type="hidden" name="id" value="<?php echo $type_response['id']; ?>" />
                             <?php } ?>
 
                             <div class="row">
@@ -51,7 +51,7 @@
                                         <label class="control-label" for="name">Name:
                                         <span class="required">*</span></label>
                                         <input type="text" class="required form-control" name="name" placeholder="Name *"
-                                        value="<?php echo isset($type_response[$type.'_name']) ? $type_response[$type.'_name'] : ''; ?>">
+                                        value="<?php echo isset($type_response['name']) ? $type_response['name'] : ''; ?>">
                                         <span class="help-block">
                                         </span>
                                     </div>

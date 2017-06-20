@@ -956,6 +956,7 @@ class Suppliers extends Admin_Controller {
 			}	
 
 		}
+	
 
 		if (file_exists($target_file)) {
 
@@ -964,7 +965,7 @@ class Suppliers extends Admin_Controller {
 			$uploadOk = 0;
 
 		}
-
+	
 		// Check file size
 
 		if ($_FILES["file"]["size"] > 500000) {
@@ -986,7 +987,6 @@ class Suppliers extends Admin_Controller {
 			$uploadOk = 0;
 
 		}
-//echo $uploadOk;die();
 		if ($uploadOk == 0) {
 
 			echo json_encode($uploadOk);
@@ -1006,6 +1006,7 @@ class Suppliers extends Admin_Controller {
 			if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
 
 				
+             
 
 				//$filename=$_FILES["file"]["name"];
 
@@ -1016,7 +1017,7 @@ class Suppliers extends Admin_Controller {
 				$responseData=$this->Supplier_model->upload_supplier_report_image($filename,$serialno,$uid);
 
 				//echo "The file ". basename( $_FILES["file"]["name"]). " has been uploaded.";
-
+                echo "aaaaaaaaaaa".$uploadOk;die;
 				if($responseData){
 
 					echo json_encode($uploadOk);
@@ -1068,28 +1069,22 @@ class Suppliers extends Admin_Controller {
 		$target_file = $target_dir . $filename;
 
 		$uploadOk = 1;
+	
 
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-
-		if(isset($_FILES["file"])){
+		
+		if($_FILES["file"]){
 
 			$check = $_FILES["file"]["size"];
-
 			if($check !== false) {
-
-				//echo "File is an image - " . $check["mime"] . ".";
-
 				$uploadOk = 1;
-
 			} else {
-
 				//echo "File is not an image.";
-
 				$uploadOk = 0;
-
 			}	
+		} 
+		
 
-		}
 
 		if (file_exists($target_file)) {
 
@@ -1098,6 +1093,7 @@ class Suppliers extends Admin_Controller {
 			$uploadOk = 0;
 
 		}
+		
 
 		// Check file size
 
@@ -1108,7 +1104,7 @@ class Suppliers extends Admin_Controller {
 			$uploadOk = 0;
 
 		}
-
+  
 		// Allow certain file formats
 
 		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
@@ -1120,7 +1116,7 @@ class Suppliers extends Admin_Controller {
 			$uploadOk = 0;
 
 		}
-
+   
 		if ($uploadOk == 0) {
 
 			echo json_encode($uploadOk);
@@ -1130,14 +1126,16 @@ class Suppliers extends Admin_Controller {
 			// if everything is ok, try to upload file
 
 		} else {
+			
 
 			if (!file_exists($target_dir)) {
-
 				mkdir($target_dir, 0777, true);
 
-			}   
+			}  
+			
 
 			if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+				//echo "aaa";	
 
 				$uid=$this->session->userdata('id');
 
@@ -1146,6 +1144,8 @@ class Suppliers extends Admin_Controller {
 				$responseData=$this->Supplier_model->upload_lg_repair_report_image($filename,$serialno,$uid,$uType);
 
 				//echo "The file ". basename( $_FILES["file"]["name"]). " has been uploaded.";
+				
+				//print_r($uploadOk);die;
 
 				if($responseData){
 
@@ -1176,7 +1176,6 @@ class Suppliers extends Admin_Controller {
 	
 
 	public function get_uploaded_photo($serialno){
-
 		$this->load->model('Supplier_model');
 
 		$responseData=$this->Supplier_model->get_uploaded_photo($serialno);
@@ -1199,6 +1198,23 @@ class Suppliers extends Admin_Controller {
 
 	}
 	
+	
+	public function remove_lg_user_image($serialno){ 
+	
+	$RowId = $_REQUEST['id'];
+	$PhotoVal = $_REQUEST['PhotoVal'];
+	
+	$this->load->model('Supplier_model');
+	$responseData=$this->Supplier_model->remove_lg_user_image($RowId,$PhotoVal);
+	if($responseData){
+		$retu = 1;
+	 echo json_encode($retu);
+		}else{
+		$retu = 0;
+	 echo json_encode($retu);
+		}
+
+	}
 	
 	public function delete_supplier_report($serialno,$reportName){
 		$this->load->model('Supplier_model');

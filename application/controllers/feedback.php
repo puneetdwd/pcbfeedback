@@ -32,11 +32,9 @@ class Feedback extends Admin_Controller {
         $this->template->render();
 	}
 	public function all_user() {
-		echo "aaa";
+		
 		$data='';
 		$data['sessiondata']=$this->session->userdata;
-                //echo  "<pre>";
-		//print_r($this->session);die();
 		$this->template->write('title', 'SQIM | User Feedback');
 		$this->template->write_view('content', 'feedback/all_user', $data);
         $this->template->render();
@@ -50,11 +48,6 @@ class Feedback extends Admin_Controller {
 		//print_r($this->session);die;
 		$data='';
 		$data['sessiondata']=$this->session->userdata;
-		//print_r($this->session->userdata());die(); 
-		$this->load->model('Masters_model');
-		$data['masters_defect'] = $this->Masters_model->get_all_type(defect);
-		$data['master_category'] = $this->Masters_model->get_all_type(category);
-		$data['master_cause_dept'] = $this->Masters_model->get_all_type(cause_dept);
 		$this->template->write('title', 'SQIM | Repair Feedback');
 		$this->template->write_view('content', 'feedback/lg_repair_user',$data);
         $this->template->render();

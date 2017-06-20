@@ -39,10 +39,9 @@ class Masters extends Admin_Controller {
             if(empty($type_response)){
                 redirect(base_url().'masters/index/'.$type);
             }
-
             $data['type_response'] = $type_response;
-          //  print_r($data);
         }
+		
         if($this->input->post()) {
             $this->load->library('form_validation');
 
@@ -51,11 +50,11 @@ class Masters extends Admin_Controller {
             //$validate->set_rules('mobile', 'Product', 'required|xss_clean');
 
             if($validate->run() === TRUE) {
-                $post_data                  = $this->input->post();
-
-                $id = !empty($type_response[$type.'_id']) ? $type_response[$type.'_id'] : '';
-//echo $id;die();
-
+                $post_data   = $this->input->post();
+				
+              
+                $id = !empty($type_response['id']) ? $type_response['id'] : '';
+				
 				$type_id = $this->Masters_model->update_type($post_data, $id,$type);
 				if($type_id) {
 

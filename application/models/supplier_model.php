@@ -463,4 +463,176 @@ function get_all_user_data_total(){
         return $this->db->query($sql, array($supplier_id))->result_array();*/
     }
 	
+	
+	
+	function upload_lg_repair_report_image($filename,$serialno,$uid,$uType){
+		//echo $filename.'==>'.$serialno.'==>'.$uid.'==>'.$uType;die;
+		//print_r($this->session->userdata);die();
+		
+		//echo $filename;
+		$this->db->select("*");
+		$this->db->from('Damaged_pcb_detail');
+		$this->db->where('id',$serialno);
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		//echo  $query->num_rows();die('h');
+		if($query->num_rows() > 0){
+			$result = $query->result_array();
+			$photoname=$result[0]['photo'];
+			//print_r($result[0]['photo']);
+			//print_r($result);
+			//die();
+			if($photoname==''){
+				$photo=	$filename;
+			}
+			else{
+				$newPhoto=explode(",",$photoname);
+				array_push($newPhoto, $filename);
+				$photo=implode(",",$newPhoto);
+			}
+			$insertData=array(
+				"photo"=>$photo
+			);
+			$this->db->where('id',$serialno);
+			$this->db->update('Damaged_pcb_detail',$insertData);
+		//	echo $this->db->last_query();
+			//print_r($insertData);die;
+			if ($this->db->affected_rows() >= 0) {
+				//die('1');
+				return 1; // your code
+			} else {
+				//die('0');
+				return 0;// your code
+			}
+		}
+		else{
+			return 0;	
+		}
+		//die('h');
+		
+		
+		//$this->db->where('user_id',$uid);
+		//$this->db->where('user_type','LG REPAIR USER');
+		
+		//echo $this->db->last_query();die();
+		
+        //return $this->db->query($sql)->result_array();
+	}
+	
+	function get_uploaded_photo($serialno){
+		
+		$result=array();
+		$this->db->select("id,photo");
+		$this->db->from('Damaged_pcb_detail');
+		$this->db->where('id',$serialno);
+		$query = $this->db->get();
+		//echo $this->db->last_query();die;
+		//echo  $query->num_rows();die('h');
+		if($query->num_rows() > 0){
+			$result = $query->result_array();
+		}
+		return $result;
+	}
+	
+	function remove_lg_user_image($RowId,$photoVal){
+		$insertData = array();
+		$result=array();
+		$this->db->select("id,photo");
+		$this->db->from('Damaged_pcb_detail');
+		$this->db->where('id',$RowId);
+		$query = $this->db->get();
+		//echo $this->db->last_query();die;
+		//echo  $query->num_rows();die('h');
+		if($query->num_rows() > 0){
+			$result = $query->result_array();
+		}
+		$imageVal = $result[0]['photo'];
+		$ImageVAlE =explode(',',$imageVal);
+		$arr = array_diff($ImageVAlE, array($photoVal));
+		$insertData['photo'] = implode(',' ,$arr);
+		$this->db->where('id',$RowId);
+		return $ReturnQuery = $this->db->update('Damaged_pcb_detail',$insertData);
+	}
+	
+	
+	function get_supplier_uploaded_photo($serialno,$uid){
+		$result=array();
+		$this->db->select("lg_serial_no,cm_report");
+		$this->db->from('supplier_data');
+		$this->db->where('lg_serial_no',$serialno);
+		$this->db->where('supplier_id',$uid);
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		//echo  $query->num_rows();die('h');
+		if($query->num_rows() > 0){
+			$result = $query->result_array();
+		}
+		return $result;
+	}
+	
+	function upload_supplier_report_image($filename,$serialno,$uid){
+		
+		//die('d');
+		//print_r($this->session->userdata);die();
+		
+		
+		
+		$this->db->select("*");
+		$this->db->from('supplier_data');
+		$this->db->where('lg_serial_no',$serialno);
+		$this->db->where('supplier_id',$uid);
+		$query = $this->db->get();
+		//echo $this->db->last_query();
+		//echo  $query->num_rows();die('h');
+		if($query->num_rows() > 0){
+			//die('d');
+			$result = $query->result_array();
+			$photoname=$result[0]['cm_report'];
+			if($photoname==''){
+				$photo=	$filename;
+			}
+			else{
+				$newPhoto=explode(",",$photoname);
+				array_push($newPhoto, $filename);
+				$photo=implode(",",$newPhoto);
+			}
+			$insertData=array(
+				"lg_serial_no"=>$serialno,
+				"supplier_id"=>$uid,
+				"cm_report"=>$photo
+			
+			);
+			
+			$this->db->where('supplier_id',$uid);
+			$this->db->where('lg_serial_no',$serialno);
+			$this->db->update('supplier_data',$insertData);
+		}
+		else{
+			$insertData=array(
+				"lg_serial_no"=>$serialno,
+				"supplier_id"=>$uid,
+				"cm_report"=>$filename
+			
+			);
+			//$result = $query->result();
+			$this->db->insert('supplier_data', $insertData);
+		}
+		
+		
+		
+		
+		//echo $this->db->last_query();die();
+		if ($this->db->affected_rows() >= 0) {
+			die('1');
+			return 1; // your code
+		} else {
+			die('0');
+			return 0;// your code
+		}
+        //return $this->db->query($sql)->result_array();
+	}
+	
+	
+	
+	
 }

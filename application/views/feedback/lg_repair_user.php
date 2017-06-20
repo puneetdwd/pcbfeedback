@@ -12,27 +12,6 @@
 	padding:5px;
 }
 </style>
-<?php 
-
-$defect =array();
-foreach($masters_defect as $defectVal){
-	$defect[]= '{ Name :'.'"'.$defectVal['name'].'", ID : '.$defectVal['name'].'}';
-	}
-	$defectJson =  implode(',', $defect);
-//	echo $defectJson;die;
-$category =array();
-foreach($master_category as $categoryVal){
-	$category[]= '{ Name :'.'"'.$categoryVal['name'].' ", ID : '.$categoryVal['name'].'}';
-	}
-$categoryJson =  implode(',', $category);	
-	
-$CauseDept =array();
-foreach($master_cause_dept as $CauseDeptVal){
-	$CauseDept[]= '{ Name :'.'"'.$CauseDeptVal['name'].'", ID : '.$categoryVal['name'].'}';
-	}
-	$CauseDeptJson =  implode(',', $CauseDept);	
-?>
-
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/feedback/css/jsgrid.min.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/feedback/css/jsgrid-theme.min.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/feedback/css/demos.css" />
@@ -53,8 +32,9 @@ foreach($master_cause_dept as $CauseDeptVal){
     <div class="modal-body">
     <div>
       <input type='hidden' id='partNo' value=''>
+      <input type='hidden' id='Update_id' value=''>
       <input type="file" name="file" id="imgFile">
-      <button type="submit" class="btn btn-primary" id='imgSave'>Save</button>
+        <button type="submit" class="btn btn-primary" id='imgSave'>Save</button>
       <div id='uploadResponse'></div>
     </div>
     <div class="container1">
@@ -125,13 +105,15 @@ $(function() {
 			{ name: "Cause Level 2", type: "text", width: 150,editing: false },
 			{ name: "Cause Level 3", type: "text", width: 150,editing: false },
 			{ name: "Repair Contents", type: "text", width: 230,editing: false },
-			{ name: "Vendor", type: "text", width: 150 },
+			{ name: "Vendor", type: "text", width: 150,editing: false },
 			{ name: "Part", type: "text", width: 150 },
-			{ name: "Defect", type: "text", width: 150},
-			{ name: "Category", type: "text", width: 150 },
-			{ name: "Cause Dept", type: "text", width: 150},
+			//{ name: "Defect", type: "text", width: 150},
+			{ name: "Defect", type: "select", width: 150, items: getDefect[0], valueField: "id", textField: "name"},
+			//{ name: "Category", type: "text", width: 150 },
+			{ name: "Category", type: "select", width: 150, items: getCategory[0], valueField: "id", textField: "name"},
+			{ name: "Cause Dept", type: "select", width: 150, items: getCauseDept[0], valueField: "id", textField: "name" },
 			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150},
+			{ name: "Status", type: "select", width: 150,items: getStatus[0],valueField: "id", textField: "name"},
 			//{ name: "Action", type: "text", width: 150 },
 			
 			/*
@@ -151,6 +133,40 @@ $(function() {
 //var base_url='http://crgroup.co.in/lg/sqim/';
 var base_url = '<?php  echo base_url();?>';
 $(function() {
+	function getSelectData(type){
+	var res=Array();
+	$.ajax({
+			url: base_url+"masters/get_all_data/"+type, 
+			type: "POST",
+			//data: {updatingClient:updatingClientString},
+			dataType:"json",
+			cache:false,
+			async:false,
+			success: function(data){ 
+			//console.log(data)
+				res.push(data);
+				if(res[0].length==0){
+					//alert('0');
+					var obj = {};
+					obj[type+'_id']='0';
+					obj[type+'_name']='';
+					res[0].push(obj);	
+				}
+			}
+				
+	});
+	
+	
+	return res;}
+	
+	getDefect=getSelectData('defect');
+	getCategory=getSelectData('category');
+	getCauseDept=getSelectData('cause_dept');
+	getStatus=getSelectData('status');
+getAOIDetectStatus=getSelectData('aoi_detection_status');
+	
+	
+	
     var db = {
 
         loadData: function(filter) {
@@ -166,7 +182,7 @@ $(function() {
 						success: function(response){ 
 							//console.log(response);
 							$.each(response,function(key,data){
-								var photo="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.set_sn+"'>View</a>";
+								var photo="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.id+"'>View</a>";
 								/*if(data.photo=='' || data.photo==undefined ){
 									var photo="";
 								}
@@ -207,7 +223,7 @@ $(function() {
 			//return clientDataArray;
 			
 			return $.grep(clientDataArray, function(client) {
-                return (!filter.Status || client.Status.indexOf(filter.Status) > -1)
+              return (!filter.Status1 || client.Status1.indexOf(filter.Status1) >= 0)
 				&& (!filter.Part || client.Part === filter.Part)
 				&& (!filter.DefectDate.from || new Date(client.DefectDate) >= filter.DefectDate.from) 
                 && (!filter.DefectDate.to || new Date(client.DefectDate) <= filter.DefectDate.to);
@@ -432,12 +448,38 @@ jsGrid.fields.date = DateField;
 }());
 </script>
 <script>
-	$(document).ready(function(){
-		//var base_url='http://crgroup.co.in/lg/sqim/';
-		var base_url = '<?php  echo base_url();?>';
-		$(document).on("click", ".uploadImg", function () {
+
+$(document).ready(function(){
+	var base_url='<?php  echo base_url();?>';
+	
+	$(document).on("click", ".ImageRemove", function () {
+		
+		var RowId = this.id;
+		var PhotoVal = $(this).attr('alt');
+		
+		 $.ajax({
+			url: base_url+"suppliers/remove_lg_user_image/"+RowId, 
+			data:{id:RowId,PhotoVal:PhotoVal},
+			type: "POST",
+			dataType:"json",
+			//contentType: false,
+			cache: false,   
+			//processData:false, 
+			async:false,
+			success: function(response){
+				//alert(response);
+				if(response==1){
+			   
+				}
+			}
+		})
+		 $(this).closest('.mImgBox').remove();
+		 return false;
+		});
+	$(document).on("click", ".uploadImg", function () {
 		 var Id = $(this).data('id');
-		 $(".modal-body #partNo").val( Id );
+		 $(".modal-body #partNo").val( Id ); 
+		 $("#Update_id").val( Id );
 		 $.ajax({
 			url: base_url+"suppliers/get_uploaded_photo/"+Id, 
 			//data:new FormData(this),
@@ -452,11 +494,12 @@ jsGrid.fields.date = DateField;
 				$('#imgLayerDiv').html('');
 				//console.log(response[0].photo); 
 				var photoname=response[0].photo;
-				var sno=response[0].set_sn;
+				var sno=response[0].id;
+				//alert(photoname);
 				if(photoname!=''){
 					var photoArr=photoname.split(",");
 					$.each(photoArr,function(key,val){
-						$('#imgLayerDiv').append("<div class='mImgBox'><a href='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='image-link' rel='prettyPhoto'><img src='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='img-thumbnail'></a></div>");
+						$('#imgLayerDiv').append("<div class='mImgBox' id='del_"+sno+val+"'><a href='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='image-link' rel='prettyPhoto'><img src='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='img-thumbnail'></a><span class='glyphicon glyphicon-remove ImageRemove' aria-hidden='true' id='"+sno+"'  alt='"+val+"'></span></div>");
 					});
 				}
 				else{
@@ -467,129 +510,57 @@ jsGrid.fields.date = DateField;
 			}
 		})
 	});
-	
-		$(document).on("click", "#showAll", function () {
-			
-			if($(this).prop("checked") == true){
-            	alert("Checkbox is checked.");
-				$("#jsGrid1").css('display','none');
-				$("#jsGrid").css('display','block');
-				$("#jsGrid").jsGrid({
-        
-		height: "auto",
-        width: "100%",
-		
-
-        filtering: true,
-        editing: true,
-        sorting: true,
-        paging: true,
-        autoload: true,
-
-        pageSize: 10,
-        pageButtonCount: 5,
-
-        deleteConfirm: "Do you really want to delete the client?",
-
-        controller: db1,
-
-        fields: [
-			{ name: "SN", type: "text", width: 50,editing: false },
-            { name: "Organization Name", type: "text", width: 150,editing: false },
-			{ name: "Production Line", type: "text", width: 150,editing: false },
-			{ name: "Set S/N", type: "text", width: 150,editing: false },
-			{ name: "DefectDate", type: "date", width: 175,editing: false },
-			{ name: "Part No", type: "text", width: 170,editing: false },
-			{ name: "Defect Quantity", type: "number", width: 100,editing: false },
-			{ name: "PCBG Main", type: "text", width: 150,editing: false },
-			{ name: "Symptom Level 3", type: "text", width: 200,editing: false },
-			{ name: "Cause Level 1", type: "text", width: 150,editing: false },
-			{ name: "Cause Level 2", type: "text", width: 150,editing: false },
-			{ name: "Cause Level 3", type: "text", width: 150,editing: false },
-			{ name: "Repair Contents", type: "text", width: 230,editing: false },
-			{ name: "Vendor", type: "text", width: 150,editing: false },
-			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150, items: db1.defect, valueField: "Id", textField: "Name",editing: false},
-			{ name: "Category", type: "text", width: 150, items: db1.category, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Cause Dept", type: "text", width: 150, items: db1.cause_dept, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150, items: db1.status, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Cause", type: "text", width: 150 },
-			{ name: "Operator Name", type: "text", width: 150 },
-			{ name: "Action", type: "text", width: 150 },
-			
-			/*
-            { name: "Age", type: "number", width: 50 },
-            { name: "Address", type: "text", width: 200 },
-            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
-            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-			*/
-            { type: "control", deleteButton: false,width:100 }
-			
-        ]
-    });
-				
-            }
-            else if($(this).prop("checked") == false){
-                alert("Checkbox is unchecked.");
-				$("#jsGrid").css('display','none');
-				$("#jsGrid1").css('display','block');
-				$("#jsGrid1").jsGrid({
-        
-		height: "auto",
-        width: "100%",
-		
-
-        filtering: true,
-        editing: true,
-        sorting: true,
-        paging: true,
-        autoload: true,
-
-        pageSize: 10,
-        pageButtonCount: 5,
-
-        deleteConfirm: "Do you really want to delete the client?",
-
-        controller: db,
-
-        fields: [
-			{ name: "SN", type: "text", width: 50,editing: false },
-            { name: "Organization Name", type: "text", width: 150,editing: false },
-			{ name: "Production Line", type: "text", width: 150,editing: false },
-			{ name: "Set S/N", type: "text", width: 150,editing: false },
-			{ name: "DefectDate", type: "text", width: 175,editing: false },
-			{ name: "Part No", type: "text", width: 170,editing: false },
-			{ name: "Defect Quantity", type: "number", width: 100,editing: false },
-			{ name: "PCBG Main", type: "text", width: 150,editing: false },
-			{ name: "Symptom Level 3", type: "text", width: 200,editing: false },
-			{ name: "Cause Level 1", type: "text", width: 150,editing: false },
-			{ name: "Cause Level 2", type: "text", width: 150,editing: false },
-			{ name: "Cause Level 3", type: "text", width: 150,editing: false },
-			{ name: "Repair Contents", type: "text", width: 230,editing: false },
-			{ name: "Vendor", type: "text", width: 150,editing: false },
-			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150, items: db.defect, valueField: "Id", textField: "Name",editing: false},
-			{ name: "Category", type: "text", width: 150, items: db.category, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Cause Dept", type: "text", width: 150, items: db.cause_dept, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150, items: db.status, valueField: "Id", textField: "Name",editing: false },
-			{ name: "Cause", type: "text", width: 150 },
-			{ name: "Operator Name", type: "text", width: 150 },
-			{ name: "Action", type: "text", width: 150 },
-			
-			/*
-            { name: "Age", type: "number", width: 50 },
-            { name: "Address", type: "text", width: 200 },
-            { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
-            { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
-			*/
-            { type: "control", deleteButton: false,width:100 }
-			
-        ]
-    });
-            }
-		});
-
+	$(document).on('submit','#form',function(e){
+		e.preventDefault();
+		imgName=$('#imgFile').val();
+		sno=$('#partNo').val();
+		UpdateId=$("#Update_id").val();
+		$.ajax({
+			url: base_url+"suppliers/upload_repair_user_image/"+sno, 
+			data:new FormData(this),
+			type: "POST",
+			dataType:"json",
+			contentType: false,
+			cache: false,   
+			processData:false, 
+			async:false,
+			success: function(response){
+				console.log(response); 
+				if(response==1){
+					$('#uploadResponse').html('<br/>Image Successfully Uploaded.');	
+					$.ajax({
+						url: base_url+"suppliers/get_uploaded_photo/"+sno, 
+						//data:new FormData(this),
+						type: "POST",
+						dataType:"json",
+						//contentType: false,
+						cache: false,   
+						//processData:false, 
+						async:false,
+						success: function(response){
+							
+							$('#imgLayerDiv').html('');
+							//console.log(response[0].photo); 
+							var photoname=response[0].photo;
+							var sno=response[0].set_sn;
+							if(photoname!=''){
+								var photoArr=photoname.split(",");
+								$.each(photoArr,function(key,val){
+									$('#imgLayerDiv').append("<div class='mImgBox'><a href='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='image-link' rel='prettyPhoto'><img src='"+base_url+"upload/images/LGREPAIR/"+sno+"/photo/"+val+"' class='img-thumbnail'></a></div>");
+								});
+							}
+							else{
+								$('#imgLayerDiv').html('No Images uploaded yet.');
+							}
+							$('.image-link').magnificPopup({type:'image'});
+							
+						}
+					})
+				}else{
+					$('#uploadResponse').html('<br/>Image Upload Unsuccessful.');
+				}
+			}
+		})
 	});
+});
 </script>

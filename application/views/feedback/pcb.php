@@ -1,3 +1,7 @@
+<?php  echo $userType = $this->session->userdata('user_type');
+ $userId = $this->session->userdata('id');
+?>
+
 <style>
 .mImgBox {
     cursor: pointer;
@@ -140,17 +144,17 @@ $(function() {
 			{ name: "Repair Contents", type: "text", width: 230,editing: false },
 			{ name: "Vendor", type: "text", width: 150,editing: false },
 			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150,editing: false},
-			{ name: "Category", type: "text", width: 150,editing: false },
-			{ name: "Cause Dept", type: "text", width: 150,editing: false },
+			{ name: "Defect", type: "select", width: 150, items: getDefect[0], valueField: "id", textField: "name",editing: false},
+			{ name: "Category", type: "select", width: 150, items: getCategory[0], valueField: "id", textField: "name", editing: false },
+			{ name: "Cause Dept", type: "select", width: 150, items: getCauseDept[0], valueField: "id", textField: "name",editing: false },
 			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150,editing: false },
+			{ name: "Status", type: "select", width: 150,items: getStatus[0],valueField: "id", textField: "name",editing: false },
 			{ name: "Cause", type: "text", width: 150},
-			{ name: "AOI Detection Status", type: "text"},
-			{ name: "AOI Detection Possibility", type: "text", width: 150},
+			{ name: "AOI Detection Status", type: "select", width: 150,items: getAOIDetectStatus[0],valueField: "id", textField: "name"},
+			{ name: "AOI Detection Possibility", type: "select", width: 150,items: getAOIDetectPossibility[0],valueField: "id", textField: "name"},
 			{ name: "AOI Revision", type: "text", width: 150},
-			{ name: "DFT Detection Status", type: "text", width: 150 },
-			{ name: "DFT Detection Possibility", type: "text"},
+			{ name: "DFT Detection Status", type: "select", width: 150,items: getDFTDetectStatus[0],valueField: "id", textField: "name" },
+			{ name: "DFT Detection Possibility",type: "select", width: 150,items: getDFTDetectPossibility[0],valueField: "id", textField: "name"},
 			{ name: "DFT Revision", type: "text", width: 150},
 			{ name: "CM Report", type: "text", width: 150,editing: false},
             { type: "control", deleteButton: false,width:100 },
@@ -212,7 +216,7 @@ var base_url='<?php echo base_url(); ?>';
 							$.each(response,function(key,data){
 								if(data.photo !='')
 								{
-								var photo="<a href='' class='viewImg' data-toggle='modal' data-target='#myModalPhoto' data-id='"+data.set_sn+"'>View</a>";
+								var photo="<a href='' class='viewImg' data-toggle='modal' data-target='#myModalPhoto' data-id='"+data.id+"'>View</a>";
 								
 								}/*if(data.photo=='' || data.photo==undefined ){
 									var photo="";
@@ -221,7 +225,7 @@ var base_url='<?php echo base_url(); ?>';
 									var photo="<img width='64' height='64' src='"+base_url+"upload/images/LGREPAIR/"+data.set_sn+"/photo/"+data.photo+"'>"
 								}*/
 								//if(data.cm_report=='' || data.cm_report==undefined ){
-									var cm_report="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.set_sn+"'>Upload</a>";
+									var cm_report="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.id+"'>Upload</a>";
 								//}
 								//else{
 								//	var cm_report="<img width='64' height='64' src='"+base_url+"upload/images/LG/<?php echo $sessiondata['user_type']; ?>/<?php echo $sessiondata['id']; ?>/"+data.set_sn+"/report/"+data.cm_report+"'>"
@@ -264,7 +268,7 @@ var base_url='<?php echo base_url(); ?>';
 				//return clientDataArray;
 				
 				return $.grep(clientDataArray, function(client) {
-                return (!filter.Status || client.Status.indexOf(filter.Status) > -1)
+                return (!filter.Status1 || client.Status1.indexOf(filter.Status1) > -1)
 				&& (!filter.Part || client.Part === filter.Part)
 				&& (!filter.DefectDate.from || new Date(client.DefectDate) >= filter.DefectDate.from) 
                 && (!filter.DefectDate.to || new Date(client.DefectDate) <= filter.DefectDate.to);
@@ -526,7 +530,8 @@ jsGrid.fields.date = DateField;
 <script>
 
 $(document).ready(function(){
-	var base_url='http://crgroup.co.in/lg/sqim/';
+	//var base_url='http://crgroup.co.in/lg/sqim/';
+	var base_url = '<?php  echo base_url();?>';
 	$(document).on("click", ".uploadImg", function () {
 		 var Id = $(this).data('id');
 		 $(".modal-body #partNo").val( Id );
@@ -548,7 +553,7 @@ $(document).ready(function(){
 							if(photoname!=''){
 								var photoArr=photoname.split(",");
 								$.each(photoArr,function(key,val){
-									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $sessiondata['user_type']; ?>/<?php echo $sessiondata['id']; ?>/"+sno+"/report/"+val+"' >"+val+"</a></div><div class='supReportDelete' >X</div></div");
+									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $userType; ?>/<?php echo $userId; ?>/"+sno+"/report/"+val+"' >"+val+"</a></div><div class='supReportDelete' >X</div></div");
 								});
 							}
 							else{
@@ -623,10 +628,13 @@ $(document).ready(function(){
 							//console.log(response[0].photo); 
 							var photoname=response[0].cm_report;
 							//var sno=response[0].set_sn;
+							
 							if(photoname!=''){
 								var photoArr=photoname.split(",");
 								$.each(photoArr,function(key,val){
-									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $sessiondata['user_type']; ?>/<?php echo $sessiondata['id']; ?>/"+sno+"/report/"+val+"' >"+val+"</a></div><div class='supReportDelete' >X</div></div");
+									var UserType=<?php echo $userType; ?>;
+							        var UserId=<?php echo $userId; ?>;
+									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $userType; ?>/<?php echo $userId; ?>/"+sno+"/report/"+val+"' >"+val+"</a></div><div class='supReportDelete' >X</div></div");
 								});
 							}
 							else{
@@ -677,7 +685,7 @@ $(document).ready(function(){
 							if(photoname!=''){
 								var photoArr=photoname.split(",");
 								$.each(photoArr,function(key,val){
-									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $sessiondata['user_type']; ?>/<?php echo $sessiondata['id']; ?>/"+sno+"/report/"+val+"'>"+val+"</a></div><div class='supReportDelete' >X</div></div");
+									$('#imgLayerDivSupplier').append("<div class='mRepBox'><div class='reportName' style='float:left;'><a href='"+base_url+"upload/images/LG/<?php echo $userType ?>/<?php echo $userId ?>/"+sno+"/report/"+val+"'>"+val+"</a></div><div class='supReportDelete' >X</div></div");
 								});
 							}
 							else{

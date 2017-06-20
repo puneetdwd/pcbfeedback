@@ -299,6 +299,12 @@ $user_type=$this->session->userdata('user_type');
                                                 <i class="icon-briefcase"></i> Dft revision 
                                             </a>
                                         </li>
+                                          <li>
+                                            <a href="<?php echo base_url(); ?>masters/index/operator">
+                                                <i class="icon-briefcase"></i> OPERATOR NAME 
+                                            </a>
+                                        </li>
+                                        
                                     <?php //} ?>
                                 </ul>
                             </li>

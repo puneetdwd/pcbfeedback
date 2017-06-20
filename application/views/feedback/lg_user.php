@@ -93,13 +93,13 @@ $(function() {
 			{ name: "Repair Contents", type: "text", width: 230,editing: false },
 			{ name: "Vendor", type: "text", width: 150,editing: false },
 			{ name: "Part", type: "text", width: 150,editing: false },
-			{ name: "Defect", type: "text", width: 150,editing: false},
-			{ name: "Category", type: "text", width: 150, editing: false },
-			{ name: "Cause Dept", type: "text", width: 150, editing: false },
+			{ name: "Defect", type: "select", width: 150, items: getDefect[0], valueField: "id", textField: "name",editing: false},
+			{ name: "Category", type: "select", width: 150, items: getCategory[0], valueField: "id", textField: "name", editing: false },
+			{ name: "Cause Dept", type: "select", width: 150, items: getCauseDept[0], valueField: "id", textField: "name", editing: false },
 			{ name: "Photo", type: "text", width: 150,editing: false },
-			{ name: "Status", type: "text", width: 150,editing: false },
+			{ name: "Status",  type: "select", width: 150,items: getStatus[0],valueField: "id", textField: "name",editing: false },
 			{ name: "Cause", type: "text", width: 150 },
-			{ name: "Operator Name", type: "text", width: 150 },
+			{ name: "Operator Name",  type: "select", width: 150,items: get0perator[0],valueField: "id", textField: "name" },
 			{ name: "Action", type: "text", width: 150 },
 			
 			/*
@@ -119,6 +119,41 @@ $(function() {
 //var base_url='http://crgroup.co.in/lg/sqim/';
 var base_url = '<?php  echo base_url();?>';
 $(function() {
+	
+	function getSelectData(type){
+	var res=Array();
+	$.ajax({
+			url: base_url+"masters/get_all_data/"+type, 
+			type: "POST",
+			//data: {updatingClient:updatingClientString},
+			dataType:"json",
+			cache:false,
+			async:false,
+			success: function(data){ 
+			//console.log(data)
+				res.push(data);
+				if(res[0].length==0){
+					//alert('0');
+					var obj = {};
+					obj[type+'_id']='0';
+					obj[type+'_name']='';
+					res[0].push(obj);	
+				}
+			}
+				
+	});
+	
+	
+	return res;}
+	
+	getDefect=getSelectData('defect');
+	getCategory=getSelectData('category');
+	getCauseDept=getSelectData('cause_dept');
+	getStatus=getSelectData('status');
+	get0perator=getSelectData('operator');
+	
+	
+	
     var db = {
 
         loadData: function(filter) {
@@ -134,7 +169,7 @@ $(function() {
 						success: function(response){ 
 							console.log(response);
 							$.each(response,function(key,data){
-								var photo="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.set_sn+"'>View</a>";
+								var photo="<a href='' class='uploadImg' data-toggle='modal' data-target='#myModal' data-id='"+data.id+"'>View</a>";
 								/*if(data.photo=='' || data.photo==undefined ){
 									var photo="";
 								}
@@ -175,7 +210,7 @@ $(function() {
 			//return clientDataArray;
 			
 			return $.grep(clientDataArray, function(client) {
-                return (!filter.Status || client.Status.indexOf(filter.Status) > -1)
+                return (!filter.Status1 || client.Status1.indexOf(filter.Status1) > -1)
 				&& (!filter.Part || client.Part === filter.Part)
 				&& (!filter.DefectDate.from || new Date(client.DefectDate) >= filter.DefectDate.from) 
                 && (!filter.DefectDate.to || new Date(client.DefectDate) <= filter.DefectDate.to);
@@ -421,7 +456,7 @@ jsGrid.fields.date = DateField;
 				$('#imgLayerDiv').html('');
 				//console.log(response[0].photo); 
 				var photoname=response[0].photo;
-				var sno=response[0].set_sn;
+				var sno=response[0].id;
 				if(photoname!=''){
 					var photoArr=photoname.split(",");
 					$.each(photoArr,function(key,val){
